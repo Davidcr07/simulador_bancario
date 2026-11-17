@@ -4,6 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 const { pool, verificarConexion } = require('./config/db');
+const authRoutes = require('./routes/auth.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,9 @@ app.use(
 
 // Archivos estáticos del Frontend
 app.use(express.static(path.join(__dirname, '../public')));
+
+// Rutas de la API
+app.use('/api/auth', authRoutes);
 
 // Endpoint de verificación de la Fase 1 (Estado del servidor y base de datos)
 app.get('/api/health', async (req, res) => {

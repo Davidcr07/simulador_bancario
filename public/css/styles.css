@@ -1,0 +1,54 @@
+:root {
+  --banco-primario: #0d3b66;
+  --banco-secundario: #1d63b8;
+  --banco-acento: #f4d35e;
+  --banco-fondo: #f4f7fb;
+}
+
+body {
+  background-color: var(--banco-fondo);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+.navbar-banco {
+  background: linear-gradient(135deg, var(--banco-primario) 0%, var(--banco-secundario) 100%);
+}
+
+.card-modulo {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(13, 59, 102, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-modulo:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(13, 59, 102, 0.14);
+}
+
+.auth-card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(13, 59, 102, 0.1);
+}
+
+.btn-banco {
+  background-color: var(--banco-primario);
+  border-color: var(--banco-primario);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.btn-banco:hover {
+  background-color: var(--banco-secundario);
+  border-color: var(--banco-secundario);
+  color: #ffffff;
+}
+
+.badge-modulo {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

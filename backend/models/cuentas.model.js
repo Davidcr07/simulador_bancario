@@ -1,6 +1,11 @@
 const { pool } = require('../config/db');
 
 /**
+ * MODELO: Cuenta Bancaria (Tabla `cuentas`)
+ * Atributos principales: id, usuario_id, numero_cuenta, tipo_cuenta, saldo, pin_hash, estado, fecha_apertura
+ */
+
+/**
  * Busca una cuenta bancaria por su número de cuenta junto con los datos del titular.
  */
 async function buscarPorNumeroCuenta(numeroCuenta) {
@@ -28,7 +33,7 @@ async function buscarPorNumeroCuenta(numeroCuenta) {
 }
 
 /**
- * Busca una cuenta bancaria por su ID primario (para verificación de sesión en cajero/cliente).
+ * Busca una cuenta bancaria por su ID primario.
  */
 async function buscarPorId(cuentaId) {
   const [rows] = await pool.query(
@@ -52,7 +57,42 @@ async function buscarPorId(cuentaId) {
   return rows[0] || null;
 }
 
+/**
+ * Obtiene y bloquea (FOR UPDATE) el registro de una cuenta dentro de una transacción activa.
+ */
+async function obtenerPorIdParaTransaccion(connection, cuentaId) {
+  const [rows] = await connection.query(
+    `SELECT 
+        c.id,
+        c.usuario_id,
+        c.numero_cuenta,
+        c.tipo_cuenta,
+        c.saldo,
+        c.estado AS estado_cuenta,
+        u.estado AS estado_usuario,
+        u.nombre_completo AS titular_nombre
+     FROM cuentas c
+     INNER JOIN usuarios u ON u.id = c.usuario_id
+     WHERE c.id = ?
+     FOR UPDATE`,
+    [cuentaId]
+  );
+  return rows[0] || null;
+}
+
+/**
+ * Actualiza el saldo de una cuenta dentro de una transacción activa.
+ */
+async function actualizarSaldoEnTransaccion(connection, cuentaId, nuevoSaldo) {
+  await connection.query(
+    'UPDATE cuentas SET saldo = ? WHERE id = ?',
+    [nuevoSaldo, cuentaId]
+  );
+}
+
 module.exports = {
   buscarPorNumeroCuenta,
-  buscarPorId
+  buscarPorId,
+  obtenerPorIdParaTransaccion,
+  actualizarSaldoEnTransaccion
 };

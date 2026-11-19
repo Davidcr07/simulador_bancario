@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intranet Corporativa — NovaBank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=3" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      background-color: #0f172a;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0a2540 0%, #0052cc 100%);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+    .auth-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 3rem 0;
+    }
+    .btn-nova-navy {
+      background-color: #0a2540;
+      border-color: #0a2540;
+      color: #ffffff !important;
+      font-weight: 600;
+      border-radius: 0.6rem;
+    }
+    .btn-nova-navy:hover {
+      background-color: #0052cc;
+      border-color: #0052cc;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-dark py-3 border-bottom border-secondary border-opacity-25">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2 text-white fw-bold fs-5">
+        <span class="brand-icon"><i class="bi bi-shield-lock"></i></span>
+        <span>NovaBank <span class="text-info fw-normal fs-6">| Portal Interno de Funcionarios</span></span>
+      </div>
+      <span class="badge bg-secondary bg-opacity-25 text-light border border-secondary border-opacity-50">
+        Red Corporativa Restringida
+      </span>
+    </div>
+  </nav>
+
+  <main class="auth-wrapper">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+          <div class="card border-0 rounded-4 shadow-lg p-4 bg-white">
+            <div class="card-body">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-dark">Acceso Administrativo</span>
+              </div>
+              <h2 class="h4 fw-bold mb-1">Consola de Operaciones Bancarias</h2>
+              <p class="text-muted small mb-4">
+                Identifíquese con sus credenciales de funcionario autorizado.
+              </p>
+
+              <div id="alertaMensaje" class="alert d-none small" role="alert"></div>
+
+              <!-- Panel de sesión activa -->
+              <div id="panelSesionActiva" class="d-none">
+                <div class="alert alert-success border-0">
+                  <h6 class="fw-bold mb-1">
+                    <i class="bi bi-person-check-fill me-1"></i> Funcionario Autenticado
+                  </h6>
+                  <p class="mb-0 small" id="infoAdminSesion"></p>
+                </div>
+                <div class="d-grid gap-2 mt-3">
+                  <a href="/admin/dashboard.html" class="btn btn-nova-navy py-2">
+                    Abrir Consola Administrativa <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                  <button type="button" id="btnCerrarSesion" class="btn btn-outline-danger btn-sm">
+                    Cerrar Sesión Corporativa
+                  </button>
+                </div>
+              </div>
+
+              <!-- Formulario de Login Admin -->
+              <form id="formLoginAdmin" novalidate>
+                <div class="mb-3">
+                  <label for="identificador" class="form-label fw-semibold small">
+                    Correo corporativo o documento
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light text-muted">
+                      <i class="bi bi-person-badge"></i>
+                    </span>
+                    <input
+                      type="text"
+                      id="identificador"
+                      class="form-control"
+                      placeholder="Usuario corporativo"
+                      autocomplete="username"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <label for="password" class="form-label fw-semibold small">
+                    Clave de funcionario
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light text-muted">
+                      <i class="bi bi-lock"></i>
+                    </span>
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-control"
+                      placeholder="••••••••"
+                      autocomplete="current-password"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-nova-navy w-100 py-2">
+                  Autenticar en Consola Central
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <span class="text-white-50 small">
+              <i class="bi bi-exclamation-triangle me-1"></i> El acceso a este sistema es auditado y exclusivo para personal de NovaBank.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('formLoginAdmin');
+    const alerta = document.getElementById('alertaMensaje');
+    const panelSesion = document.getElementById('panelSesionActiva');
+    const infoAdminSesion = document.getElementById('infoAdminSesion');
+    const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+
+    function mostrarAlerta(tipo, texto) {
+      alerta.className = `alert alert-${tipo} small`;
+      alerta.textContent = texto;
+      alerta.classList.remove('d-none');
+    }
+
+    async function verificarSesion() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (data.ok && data.usuario && data.usuario.rol === 'ADMIN') {
+          form.classList.add('d-none');
+          panelSesion.classList.remove('d-none');
+          infoAdminSesion.textContent = `${data.usuario.nombre_completo} (${data.usuario.correo})`;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alerta.classList.add('d-none');
+
+      const identificador = document.getElementById('identificador').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!identificador || !password) {
+        mostrarAlerta('warning', 'Complete sus credenciales corporativas.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            identificador,
+            password,
+            rolEsperado: 'ADMIN'
+          })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.ok) {
+          mostrarAlerta('danger', data.mensaje || 'Credenciales no autorizadas.');
+          return;
+        }
+
+        const checkDash = await fetch('/admin/dashboard.html', { method: 'HEAD' });
+        if (checkDash.ok) {
+          window.location.href = '/admin/dashboard.html';
+        } else {
+          await verificarSesion();
+        }
+      } catch (error) {
+        mostrarAlerta('danger', 'Error de conexión con el servidor central.');
+      }
+    });
+
+    btnCerrarSesion.addEventListener('click', async () => {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ modulo: 'usuario' })
+      });
+      panelSesion.classList.add('d-none');
+      form.classList.remove('d-none');
+      form.reset();
+      mostrarAlerta('info', 'Sesión corporativa finalizada.');
+    });
+
+    verificarSesion();
+  </script>
+</body>
+</html>

@@ -2,9 +2,9 @@
   "name": "simulador-bancario",
   "version": "1.0.0",
   "description": "Proyecto Integrador - Simulador Bancario Web (Banca Virtual, Panel Administrativo y Cajero Automático)",
-  "main": "src/app.js",
+  "main": "backend/app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node backend/app.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

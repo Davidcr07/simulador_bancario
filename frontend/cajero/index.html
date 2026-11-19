@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovaATM — Cajero Automático NovaBank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=3" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      background-color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+    }
+    .navbar-nova {
+      background-color: #ffffff !important;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: #0a2540;
+      text-decoration: none;
+    }
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0a2540 0%, #0052cc 100%);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+    .atm-frame {
+      background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+      border-radius: 1.5rem;
+      border: 1px solid #334155;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
+      color: #f8fafc;
+    }
+    .atm-display {
+      background-color: #ffffff;
+      color: #0f172a;
+      border-radius: 1rem;
+      min-height: 440px;
+      padding: 2rem;
+      border: 2px solid #cbd5e1;
+    }
+    .pinpad-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.25rem;
+    }
+    .btn-pinpad {
+      height: 52px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 0.65rem;
+      border: 1px solid #cbd5e1;
+      background-color: #ffffff;
+      color: #0a2540;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+    .btn-pinpad:hover {
+      background-color: #eff6ff;
+      border-color: #0052cc;
+      color: #0052cc;
+    }
+    .btn-nova-primary {
+      background-color: #0052cc;
+      border-color: #0052cc;
+      color: #ffffff !important;
+      font-weight: 600;
+      border-radius: 0.6rem;
+    }
+    .btn-nova-outline {
+      border: 1.5px solid #cbd5e1;
+      background-color: #ffffff;
+      color: #0a2540 !important;
+      font-weight: 600;
+      border-radius: 0.6rem;
+    }
+    .saldo-valor {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #0a2540;
+    }
+    .voucher-card {
+      background-color: #fffbeb;
+      border: 1px dashed #f59e0b;
+      border-radius: 0.85rem;
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra superior del canal NovaATM -->
+  <nav class="navbar navbar-nova py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a class="brand-logo" href="/">
+        <span class="brand-icon"><i class="bi bi-bank2"></i></span>
+        <span>Nova<span class="text-primary">Bank</span> <span class="text-muted fw-normal fs-6">| Red NovaATM</span></span>
+      </a>
+      <a href="/" class="btn btn-nova-outline btn-sm px-3 py-2">
+        <i class="bi bi-house-door me-1"></i> Salir al Portal Principal
+      </a>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-9">
+        <div class="atm-frame p-3 p-md-4">
+          <!-- Cabecera de la terminal física -->
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 px-2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-success"><i class="bi bi-circle-fill me-1" style="font-size: 0.55rem;"></i> DISPONIBLE</span>
+              <span class="text-white-50 small">Cajero Automático NovaATM • Dispensador de Efectivo</span>
+            </div>
+            <div id="headerInfoCuenta" class="d-none">
+              <span class="badge bg-light text-dark me-2" id="badgeCuentaActiva"></span>
+              <button type="button" id="btnCerrarOperacionTop" class="btn btn-danger btn-sm fw-semibold">
+                <i class="bi bi-box-arrow-right me-1"></i> Retirar Tarjeta / Salir
+              </button>
+            </div>
+          </div>
+
+          <!-- Pantalla del Cajero -->
+          <div class="atm-display">
+            <div id="alertaCajero" class="alert d-none small" role="alert"></div>
+
+            <!-- 1. VISTA DE IDENTIFICACIÓN CON TECLADO NUMÉRICO (PINPAD REAL) -->
+            <div id="vistaLoginCajero">
+              <div class="row align-items-center g-4">
+                <div class="col-md-7">
+                  <div class="d-inline-flex align-items-center gap-2 text-primary fw-bold small mb-2">
+                    <i class="bi bi-credit-card-2-front-fill fs-5"></i>
+                    <span>BIENVENIDO A LA RED NOVAATM</span>
+                  </div>
+                  <h2 class="h4 fw-bold mb-2">Autenticación de Tarjeta / Cuenta</h2>
+                  <p class="text-muted small mb-4">
+                    Digite su número de cuenta bancaria y su clave PIN de 4 dígitos utilizando su teclado o el teclado numérico en pantalla.
+                  </p>
+
+                  <form id="formLoginCajero" novalidate>
+                    <div class="mb-3">
+                      <label for="numeroCuenta" class="form-label fw-semibold small">
+                        Número de Cuenta
+                      </label>
+                      <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light text-muted">
+                          <i class="bi bi-credit-card"></i>
+                        </span>
+                        <input
+                          type="text"
+                          id="numeroCuenta"
+                          class="form-control"
+                          placeholder="Digite su número de cuenta"
+                          inputmode="numeric"
+                          autocomplete="off"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div class="mb-4">
+                      <label for="pinCajero" class="form-label fw-semibold small">
+                        Clave PIN
+                      </label>
+                      <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light text-muted">
+                          <i class="bi bi-shield-lock"></i>
+                        </span>
+                        <input
+                          type="password"
+                          id="pinCajero"
+                          class="form-control"
+                          placeholder="••••"
+                          maxlength="6"
+                          inputmode="numeric"
+                          autocomplete="off"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-nova-primary btn-lg w-100 py-2">
+                      Continuar <i class="bi bi-arrow-right-circle ms-1"></i>
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Teclado Numérico en Pantalla (Pinpad de Cajero Real) -->
+                <div class="col-md-5">
+                  <div class="pinpad-box">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="small fw-bold text-uppercase text-muted">Teclado Seguro</span>
+                      <span class="badge bg-primary-subtle text-primary" id="indicadorCampoPinpad">
+                        Campo: Número de Cuenta
+                      </span>
+                    </div>
+
+                    <div class="row g-2">
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="1">1</button></div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="2">2</button></div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="3">3</button></div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="4">4</button></div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="5">5</button></div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="6">6</button></div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="7">7</button></div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="8">8</button></div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="9">9</button></div>
+                      <div class="col-4">
+                        <button type="button" class="btn btn-outline-danger w-100 fw-bold" style="height: 52px;" id="btnPinpadLimpiar" title="Limpiar campo">
+                          C
+                        </button>
+                      </div>
+                      <div class="col-4"><button type="button" class="btn-pinpad w-100" data-key="0">0</button></div>
+                      <div class="col-4">
+                        <button type="button" class="btn btn-outline-secondary w-100 fw-bold" style="height: 52px;" id="btnPinpadBorrar" title="Borrar último dígito">
+                          <i class="bi bi-backspace"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <p class="text-muted text-center mb-0 mt-3" style="font-size: 0.75rem;">
+                      <i class="bi bi-eye-slash me-1"></i> Cubra el teclado al digitar su clave personal.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. VISTA DE MENÚ DE OPERACIONES DEL CAJERO -->
+            <div id="vistaMenuCajero" class="d-none">
+              <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4">
+                <div>
+                  <span class="text-muted small d-block">Cliente autenticado</span>
+                  <h4 class="fw-bold mb-0" id="nombreTitularCajero">—</h4>
+                </div>
+                <div class="text-end">
+                  <span class="text-muted small d-block">Producto seleccionado</span>
+                  <span class="fw-bold text-primary" id="detalleCuentaCajero">—</span>
+                </div>
+              </div>
+
+              <!-- Menú de opciones tipo pantalla táctil de cajero -->
+              <div class="row g-2 mb-4">
+                <div class="col-sm-3">
+                  <button type="button" class="btn btn-outline-primary w-100 fw-semibold active" id="tabBtnSaldo">
+                    <i class="bi bi-wallet2 me-1"></i> Consultar Saldo
+                  </button>
+                </div>
+                <div class="col-sm-3">
+                  <button type="button" class="btn btn-outline-success w-100 fw-semibold" id="tabBtnRetiro">
+                    <i class="bi bi-cash-stack me-1"></i> Realizar Retiro
+                  </button>
+                </div>
+                <div class="col-sm-3">
+                  <button type="button" class="btn btn-outline-dark w-100 fw-semibold" id="tabBtnMovimientos">
+                    <i class="bi bi-receipt me-1"></i> Últimos Movimientos
+                  </button>
+                </div>
+                <div class="col-sm-3">
+                  <button type="button" class="btn btn-outline-danger w-100 fw-semibold" id="btnCerrarOperacionMenu">
+                    <i class="bi bi-x-circle me-1"></i> Cerrar Operación
+                  </button>
+                </div>
+              </div>
+
+              <!-- SUBVISTA A: CONSULTAR SALDO -->
+              <div id="subvistaSaldo">
+                <div class="card border bg-light p-4 text-center rounded-4">
+                  <span class="text-uppercase text-muted small fw-bold">Saldo Disponible en Cuenta</span>
+                  <div class="saldo-valor my-2" id="textoSaldoDisponible">$0</div>
+                  <p class="text-muted small mb-4" id="textoDetalleEstadoCuenta"></p>
+                  <div class="d-flex justify-content-center gap-2">
+                    <button type="button" id="btnRefrescarSaldo" class="btn btn-nova-outline btn-sm px-3 py-2">
+                      <i class="bi bi-arrow-clockwise me-1"></i> Actualizar Consulta
+                    </button>
+                    <button type="button" id="btnIrARetiroDesdeSaldo" class="btn btn-nova-primary btn-sm px-3 py-2">
+                      Retirar Efectivo <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SUBVISTA B: REALIZAR RETIRO -->
+              <div id="subvistaRetiro" class="d-none">
+                <div class="row g-4">
+                  <div class="col-md-7">
+                    <h5 class="fw-bold mb-1">Seleccione o digite el valor del retiro</h5>
+                    <p class="text-muted small mb-3">
+                      El monto se descontará inmediatamente de su saldo disponible.
+                    </p>
+
+                    <div class="row g-2 mb-3">
+                      <div class="col-4">
+                        <button type="button" class="btn btn-nova-outline w-100 py-2 btn-monto-rapido" data-monto="20000">
+                          $20.000
+                        </button>
+                      </div>
+                      <div class="col-4">
+                        <button type="button" class="btn btn-nova-outline w-100 py-2 btn-monto-rapido" data-monto="50000">
+                          $50.000
+                        </button>
+                      </div>
+                      <div class="col-4">
+                        <button type="button" class="btn btn-nova-outline w-100 py-2 btn-monto-rapido" data-monto="100000">
+                          $100.000
+                        </button>
+                      </div>
+                      <div class="col-4">
+                        <button type="button" class="btn btn-nova-outline w-100 py-2 btn-monto-rapido" data-monto="200000">
+                          $200.000
+                        </button>
+                      </div>
+                      <div class="col-4">
+                        <button type="button" class="btn btn-nova-outline w-100 py-2 btn-monto-rapido" data-monto="300000">
+                          $300.000
+                        </button>
+                      </div>
+                      <div class="col-4">
+                        <button type="button" class="btn btn-nova-outline w-100 py-2 btn-monto-rapido" data-monto="500000">
+                          $500.000
+                        </button>
+                      </div>
+                    </div>
+
+                    <form id="formRetiroCajero" novalidate>
+                      <div class="mb-3">
+                        <label for="valorRetiro" class="form-label fw-semibold small">Otro valor ($)</label>
+                        <div class="input-group input-group-lg">
+                          <span class="input-group-text bg-light fw-bold">$</span>
+                          <input
+                            type="number"
+                            id="valorRetiro"
+                            class="form-control"
+                            placeholder="Ingrese el monto a retirar"
+                            min="1"
+                            step="any"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">
+                        <i class="bi bi-check2-circle me-1"></i> Confirmar y Dispensar Efectivo
+                      </button>
+                    </form>
+                  </div>
+
+                  <!-- Tirilla / Comprobante impreso del cajero -->
+                  <div class="col-md-5">
+                    <div class="voucher-card h-100 p-3 d-flex flex-column justify-content-between">
+                      <div>
+                        <div class="text-center border-bottom border-warning pb-2 mb-3">
+                          <strong class="d-block">NOVABANK S.A. - NOVAATM</strong>
+                          <span class="small text-muted">COMPROBANTE DE TRANSACCIÓN</span>
+                        </div>
+
+                        <div id="contenedorReciboVacio" class="text-muted small text-center py-5">
+                          El comprobante de su operación se imprimirá aquí una vez confirme el retiro.
+                        </div>
+
+                        <div id="contenedorReciboDatos" class="d-none small">
+                          <div class="d-flex justify-content-between mb-2">
+                            <span>RECIBO N.°:</span>
+                            <strong id="reciboId">#—</strong>
+                          </div>
+                          <div class="d-flex justify-content-between mb-2">
+                            <span>CUENTA:</span>
+                            <strong id="reciboCuenta">—</strong>
+                          </div>
+                          <div class="d-flex justify-content-between mb-2">
+                            <span>SALDO ANTERIOR:</span>
+                            <span id="reciboSaldoAnterior">$0</span>
+                          </div>
+                          <div class="d-flex justify-content-between mb-2 text-danger">
+                            <span>VALOR RETIRADO:</span>
+                            <strong id="reciboValorRetirado">-$0</strong>
+                          </div>
+                          <hr class="my-2 border-warning" />
+                          <div class="d-flex justify-content-between fs-6 text-dark">
+                            <span class="fw-bold">NUEVO SALDO:</span>
+                            <strong id="reciboNuevoSaldo">$0</strong>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="text-center text-muted mt-3" style="font-size: 0.72rem;">
+                        Conserve su comprobante • Operación verificada
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SUBVISTA C: ÚLTIMOS MOVIMIENTOS -->
+              <div id="subvistaMovimientos" class="d-none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="fw-bold mb-0">Últimos Movimientos Registrados</h5>
+                  <span class="badge bg-primary px-3 py-2" id="badgeSaldoEnMovimientos">Saldo: $0</span>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-sm table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Operación</th>
+                        <th>Descripción</th>
+                        <th class="text-end">Valor</th>
+                        <th class="text-end">Saldo Resultante</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tablaMovimientosCajero">
+                      <tr>
+                        <td colspan="5" class="text-center text-muted py-3">Consultando movimientos...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- Fin vistaMenuCajero -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/cajero.js"></script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --nova-navy: #0a2540;
+  --nova-blue: #0052cc;
+  --nova-blue-hover: #0747a6;
+  --nova-accent: #00a389;
+  --nova-gold: #f59e0b;
+  --nova-bg: #f8fafc;
+  --nova-surface: #ffffff;
+  --nova-border: #e2e8f0;
+  --nova-text: #0f172a;
+  --nova-muted: #64748b;
+}
+
+body {
+  background-color: var(--nova-bg);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--nova-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Barra superior informativa */
+.topbar-nova {
+  background-color: var(--nova-navy);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Navbar principal del banco */
+.navbar-nova {
+  background-color: var(--nova-surface);
+  border-bottom: 1px solid var(--nova-border);
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--nova-navy);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.brand-logo:hover {
+  color: var(--nova-blue);
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--nova-navy) 0%, var(--nova-blue) 100%);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 12px rgba(0, 82, 204, 0.25);
+}
+
+/* Botones corporativos */
+.btn-nova-primary {
+  background-color: var(--nova-blue);
+  border-color: var(--nova-blue);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.btn-nova-primary:hover,
+.btn-nova-primary:focus {
+  background-color: var(--nova-blue-hover);
+  border-color: var(--nova-blue-hover);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 82, 204, 0.22);
+}
+
+.btn-nova-navy {
+  background-color: var(--nova-navy);
+  border-color: var(--nova-navy);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.btn-nova-navy:hover {
+  background-color: #163a5f;
+  border-color: #163a5f;
+  color: #ffffff;
+}
+
+.btn-nova-outline {
+  border: 1.5px solid var(--nova-border);
+  background-color: #ffffff;
+  color: var(--nova-navy);
+  font-weight: 600;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.btn-nova-outline:hover {
+  border-color: var(--nova-blue);
+  color: var(--nova-blue);
+  background-color: #f0f7ff;
+}
+
+/* Hero Section del Portal Bancario */
+.hero-nova {
+  background: linear-gradient(135deg, #0a2540 0%, #0f3866 60%, #0052cc 100%);
+  color: #ffffff;
+  padding: 4.5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card-preview {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+}
+
+.bank-debit-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.card-chip {
+  width: 42px;
+  height: 30px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+}
+
+/* Tarjetas de productos y servicios */
+.feature-card {
+  background-color: var(--nova-surface);
+  border: 1px solid var(--nova-border);
+  border-radius: 1rem;
+  padding: 1.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(10, 37, 64, 0.08);
+}
+
+.feature-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #eff6ff;
+  color: var(--nova-blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.1rem;
+}
+
+/* Tarjetas de Login (Sucursal Virtual y Portal Interno) */
+.auth-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 3rem 0;
+}
+
+.auth-card {
+  background-color: var(--nova-surface);
+  border: 1px solid var(--nova-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 40px -15px rgba(10, 37, 64, 0.08);
+  overflow: hidden;
+}
+
+.auth-side-banner {
+  background: linear-gradient(155deg, var(--nova-navy) 0%, var(--nova-blue) 100%);
+  color: #ffffff;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.form-control {
+  border-radius: 0.6rem;
+  border: 1.5px solid var(--nova-border);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+}
+
+.form-control:focus {
+  border-color: var(--nova-blue);
+  box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.12);
+}
+
+/* Cajero Automático (NovaATM) */
+.atm-frame {
+  background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 1.5rem;
+  border: 1px solid #334155;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
+  color: #f8fafc;
+}
+
+.atm-display {
+  background-color: #ffffff;
+  color: var(--nova-text);
+  border-radius: 1rem;
+  min-height: 440px;
+  padding: 2rem;
+  border: 2px solid #cbd5e1;
+}
+
+.pinpad-box {
+  background-color: #f8fafc;
+  border: 1px solid var(--nova-border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+
+.btn-pinpad {
+  height: 52px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 0.65rem;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: var(--nova-navy);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.12s ease;
+}
+
+.btn-pinpad:hover {
+  background-color: #eff6ff;
+  border-color: var(--nova-blue);
+  color: var(--nova-blue);
+}
+
+.btn-pinpad:active {
+  transform: scale(0.97);
+}
+
+.saldo-valor {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--nova-navy);
+  letter-spacing: -0.02em;
+}
+
+.voucher-card {
+  background-color: #fffbeb;
+  border: 1px dashed #f59e0b;
+  border-radius: 0.85rem;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Footer */
+.footer-nova {
+  background-color: #ffffff;
+  border-top: 1px solid var(--nova-border);
+  color: var(--nova-muted);
+  font-size: 0.875rem;
+  margin-top: auto;
+}

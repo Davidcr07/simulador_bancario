@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sucursal Virtual Personas — Panel de Cliente | NovaBank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=4" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      background-color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .navbar-cliente {
+      background: linear-gradient(135deg, #0a2540 0%, #0f3866 100%);
+      color: #ffffff;
+    }
+    .brand-logo-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: #ffffff;
+      text-decoration: none;
+    }
+    .brand-logo-white:hover {
+      color: #e2e8f0;
+    }
+    .brand-icon-light {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background-color: #0052cc;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .account-hero-card {
+      background: linear-gradient(135deg, #0a2540 0%, #0052cc 100%);
+      color: #ffffff;
+      border-radius: 1.25rem;
+      padding: 1.85rem;
+      box-shadow: 0 18px 35px -12px rgba(0, 82, 204, 0.3);
+    }
+    .saldo-principal {
+      font-size: 2.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .panel-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 1.15rem;
+      box-shadow: 0 6px 18px -6px rgba(10, 37, 64, 0.05);
+    }
+    .nav-pills-nova .nav-link {
+      color: #475569;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      padding: 0.65rem 1.15rem;
+      transition: all 0.15s ease;
+    }
+    .nav-pills-nova .nav-link:hover {
+      background-color: #e2e8f0;
+      color: #0a2540;
+    }
+    .nav-pills-nova .nav-link.active {
+      background-color: #0052cc;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 82, 204, 0.25);
+    }
+    .btn-nova-primary {
+      background-color: #0052cc;
+      border-color: #0052cc;
+      color: #ffffff !important;
+      font-weight: 600;
+      border-radius: 0.6rem;
+    }
+    .btn-nova-primary:hover {
+      background-color: #0747a6;
+      border-color: #0747a6;
+    }
+    .readonly-field {
+      background-color: #f8fafc !important;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra superior de la Sucursal Virtual -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-cliente py-3 shadow-sm">
+    <div class="container">
+      <a class="brand-logo-white" href="/cliente/dashboard.html">
+        <span class="brand-icon-light"><i class="bi bi-bank2"></i></span>
+        <span>Nova<span class="text-info">Bank</span> <span class="fw-normal fs-6 text-white-50">| Sucursal Virtual Personas</span></span>
+      </a>
+
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-end d-none d-sm-block">
+          <div class="fw-bold small text-white" id="navNombreCliente">Cargando...</div>
+          <div class="text-white-50" style="font-size: 0.75rem;" id="navDocumentoCliente">—</div>
+        </div>
+        <button type="button" id="btnCerrarSesionCliente" class="btn btn-outline-light btn-sm fw-semibold px-3">
+          <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="container py-4">
+    <!-- Alerta global -->
+    <div id="alertaCliente" class="alert d-none small shadow-sm" role="alert"></div>
+
+    <!-- Tarjeta superior de resumen de cuenta y navegación -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-5">
+        <div class="account-hero-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="badge bg-white text-primary fw-bold px-3 py-1" id="cardTipoCuenta">
+                CUENTA DE AHORROS
+              </span>
+              <span class="badge bg-success-subtle text-success fw-bold" id="cardEstadoCuenta">
+                ACTIVO
+              </span>
+            </div>
+
+            <div class="text-white-50 small text-uppercase fw-semibold">Saldo Disponible</div>
+            <div class="saldo-principal my-1" id="cardSaldoDisponible">$0</div>
+          </div>
+
+          <div class="border-top border-light border-opacity-25 pt-3 mt-3 d-flex justify-content-between align-items-center">
+            <div>
+              <span class="text-white-50 d-block" style="font-size: 0.72rem;">NÚMERO DE PRODUCTO</span>
+              <strong class="fs-6" style="letter-spacing: 0.08em;" id="cardNumeroCuenta">—</strong>
+            </div>
+            <button type="button" id="btnRefrescarResumen" class="btn btn-sm btn-light text-primary fw-semibold">
+              <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accesos rápidos y resumen del titular -->
+      <div class="col-lg-7">
+        <div class="panel-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex flex-wrap justify-content-between align-items-start mb-3">
+              <div>
+                <span class="text-muted small">Bienvenido(a) de nuevo,</span>
+                <h3 class="h5 fw-bold mb-0" id="headerNombreTitular">—</h3>
+              </div>
+              <span class="badge bg-primary-subtle text-primary">
+                <i class="bi bi-shield-check me-1"></i> Sesión Protegida
+              </span>
+            </div>
+
+            <div class="row g-3 small text-secondary mb-3">
+              <div class="col-sm-6">
+                <div class="p-2 rounded-3 bg-light">
+                  <span class="text-muted d-block" style="font-size: 0.74rem;">Correo registrado</span>
+                  <strong class="text-dark" id="resumenCorreo">—</strong>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="p-2 rounded-3 bg-light">
+                  <span class="text-muted d-block" style="font-size: 0.74rem;">Teléfono de contacto</span>
+                  <strong class="text-dark" id="resumenTelefono">—</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Menú de navegación por pestañas de la Banca Virtual -->
+          <ul class="nav nav-pills nav-pills-nova gap-2 pt-2 border-top" id="menuPestanasCliente">
+            <li class="nav-item">
+              <button type="button" class="nav-link active" data-vista="movimientos">
+                <i class="bi bi-list-ul me-1"></i> Movimientos
+              </button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" data-vista="transferencias">
+                <i class="bi bi-send me-1"></i> Transferir Dinero
+              </button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" data-vista="perfil">
+                <i class="bi bi-person-gear me-1"></i> Mi Perfil
+              </button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" data-vista="seguridad">
+                <i class="bi bi-key me-1"></i> Cambiar Clave
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- VISTA 1: HISTORIAL DE MOVIMIENTOS                                  -->
+    <!-- ================================================================== -->
+    <section id="vistaMovimientos" class="panel-card p-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+          <h4 class="h5 fw-bold mb-1">Historial de Movimientos Financieros</h4>
+          <p class="text-muted small mb-0">
+            Detalle cronológico de todas las operaciones realizadas en tu cuenta desde Banca Virtual, Cajero NovaATM y Oficina.
+          </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <select id="filtroTipoMovimiento" class="form-select form-select-sm" style="min-width: 210px;">
+            <option value="TODOS">Todos los movimientos</option>
+            <option value="CONSIGNACION">Consignaciones (+)</option>
+            <option value="RETIRO_CAJERO">Retiros en Cajero (-)</option>
+            <option value="TRANSFERENCIA_ENVIADA">Transferencias Enviadas (-)</option>
+            <option value="TRANSFERENCIA_RECIBIDA">Transferencias Recibidas (+)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light small text-uppercase text-secondary">
+            <tr>
+              <th>Fecha y Hora</th>
+              <th>Tipo de Movimiento</th>
+              <th>Descripción</th>
+              <th class="text-end">Valor</th>
+              <th class="text-end">Saldo Resultante</th>
+            </tr>
+          </thead>
+          <tbody id="tablaMovimientosCliente">
+            <tr>
+              <td colspan="5" class="text-center text-muted py-4">Cargando historial de movimientos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- VISTA 2: REALIZAR TRANSFERENCIAS ENTRE CUENTAS                     -->
+    <!-- ================================================================== -->
+    <section id="vistaTransferencias" class="panel-card p-4 d-none">
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <h4 class="h5 fw-bold mb-1">Transferencias entre Cuentas NovaBank</h4>
+          <p class="text-muted small mb-4">
+            Envía dinero de forma inmediata y sin costo hacia cualquier otra cuenta activa en el banco.
+          </p>
+
+          <form id="formTransferencia" novalidate>
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Cuenta Origen</label>
+              <input
+                type="text"
+                id="inputCuentaOrigenTransferencia"
+                class="form-control readonly-field"
+                readonly
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="inputCuentaDestino" class="form-label fw-semibold small">
+                Número de Cuenta Destino
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted">
+                  <i class="bi bi-hash"></i>
+                </span>
+                <input
+                  type="text"
+                  id="inputCuentaDestino"
+                  class="form-control"
+                  placeholder="Ingresa los 10 dígitos de la cuenta destino"
+                  inputmode="numeric"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <label for="inputValorTransferencia" class="form-label fw-semibold small">
+                  Valor a Transferir ($)
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light fw-bold">$</span>
+                  <input
+                    type="number"
+                    id="inputValorTransferencia"
+                    class="form-control"
+                    placeholder="Ej: 150000"
+                    min="1"
+                    step="any"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <label for="inputDescripcionTransferencia" class="form-label fw-semibold small">
+                  Descripción o Concepto
+                </label>
+                <input
+                  type="text"
+                  id="inputDescripcionTransferencia"
+                  class="form-control"
+                  placeholder="Ej: Pago de servicios / Arriendo"
+                  maxlength="120"
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-nova-primary px-4 py-2">
+              <i class="bi bi-send-check me-1"></i> Confirmar y Enviar Transferencia
+            </button>
+          </form>
+        </div>
+
+        <!-- Comprobante de Transferencia -->
+        <div class="col-lg-5">
+          <div class="card border bg-light rounded-4 p-4 h-100">
+            <h6 class="fw-bold border-bottom pb-2 mb-3">
+              <i class="bi bi-receipt-cutoff text-primary me-1"></i> Comprobante de Transferencia
+            </h6>
+
+            <div id="comprobanteTransfVacio" class="text-muted small text-center my-auto py-4">
+              Una vez confirmes el envío, aquí aparecerá el comprobante oficial con el número de operación y tu nuevo saldo.
+            </div>
+
+            <div id="comprobanteTransfDatos" class="d-none small">
+              <div class="alert alert-success py-2 small fw-semibold mb-3">
+                <i class="bi bi-check-circle-fill me-1"></i> Transferencia Exitosa
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Comprobante N.°:</span>
+                <strong id="compTransfId">#—</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Cuenta Origen:</span>
+                <strong id="compTransfOrigen">—</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Cuenta Destino:</span>
+                <strong id="compTransfDestino">—</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Destinatario:</span>
+                <strong id="compTransfDestinatario">—</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Concepto:</span>
+                <span id="compTransfConcepto">—</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2 text-danger">
+                <span>Valor Transferido:</span>
+                <strong id="compTransfValor">-$0</strong>
+              </div>
+              <hr class="my-2" />
+              <div class="d-flex justify-content-between fs-6 text-primary">
+                <span class="fw-bold">Nuevo Saldo Disponible:</span>
+                <strong id="compTransfNuevoSaldo">$0</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- VISTA 3: INFORMACIÓN PERSONAL Y EDICIÓN DE PERFIL                  -->
+    <!-- ================================================================== -->
+    <section id="vistaPerfil" class="panel-card p-4 d-none">
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <h4 class="h5 fw-bold mb-1">Información Personal del Titular</h4>
+          <p class="text-muted small mb-4">
+            Mantén actualizados tus datos de contacto. Por políticas de seguridad bancaria, los datos financieros del producto no son modificables desde este canal.
+          </p>
+
+          <form id="formPerfilCliente" novalidate>
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <label for="perfilNombre" class="form-label fw-semibold small">Nombre Completo</label>
+                <input type="text" id="perfilNombre" class="form-control" required />
+              </div>
+              <div class="col-sm-6">
+                <label for="perfilCorreo" class="form-label fw-semibold small">Correo Electrónico</label>
+                <input type="email" id="perfilCorreo" class="form-control" required />
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-sm-6">
+                <label for="perfilTelefono" class="form-label fw-semibold small">Teléfono Celular</label>
+                <input type="text" id="perfilTelefono" class="form-control" placeholder="Ej: 3102223344" />
+              </div>
+              <div class="col-sm-6">
+                <label for="perfilDireccion" class="form-label fw-semibold small">Dirección de Residencia</label>
+                <input type="text" id="perfilDireccion" class="form-control" placeholder="Ej: Calle 10 # 20-30" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-nova-primary px-4 py-2">
+              <i class="bi bi-floppy me-1"></i> Guardar Cambios del Perfil
+            </button>
+          </form>
+        </div>
+
+        <!-- Campos protegidos no modificables (Sección 3 del PDF) -->
+        <div class="col-lg-5">
+          <div class="card border bg-light rounded-4 p-4 h-100">
+            <h6 class="fw-bold mb-2">
+              <i class="bi bi-lock-fill text-secondary me-1"></i> Datos Protegidos de la Cuenta
+            </h6>
+            <p class="text-muted small mb-3">
+              Los siguientes campos son gestionados exclusivamente por el banco y no pueden ser alterados directamente por el cliente:
+            </p>
+
+            <div class="row g-2 small">
+              <div class="col-6">
+                <label class="form-label text-muted mb-1">Documento</label>
+                <input type="text" id="perfilDocumentoReadonly" class="form-control form-control-sm readonly-field" readonly />
+              </div>
+              <div class="col-6">
+                <label class="form-label text-muted mb-1">Número de Cuenta</label>
+                <input type="text" id="perfilCuentaReadonly" class="form-control form-control-sm readonly-field" readonly />
+              </div>
+              <div class="col-6">
+                <label class="form-label text-muted mb-1">Saldo Actual</label>
+                <input type="text" id="perfilSaldoReadonly" class="form-control form-control-sm readonly-field" readonly />
+              </div>
+              <div class="col-6">
+                <label class="form-label text-muted mb-1">Estado y Rol</label>
+                <input type="text" id="perfilEstadoRolReadonly" class="form-control form-control-sm readonly-field" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- VISTA 4: CAMBIAR CONTRASEÑA                                        -->
+    <!-- ================================================================== -->
+    <section id="vistaSeguridad" class="panel-card p-4 d-none">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <h4 class="h5 fw-bold mb-1">Actualización de Clave de Acceso</h4>
+          <p class="text-muted small mb-4">
+            Tu nueva contraseña quedará encriptada inmediatamente para tus próximos ingresos a la Sucursal Virtual Personas.
+          </p>
+
+          <form id="formCambiarPassword" novalidate>
+            <div class="mb-3">
+              <label for="inputPasswordActual" class="form-label fw-semibold small">
+                Contraseña Actual
+              </label>
+              <input
+                type="password"
+                id="inputPasswordActual"
+                class="form-control"
+                placeholder="Ingresa tu contraseña actual"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="inputPasswordNueva" class="form-label fw-semibold small">
+                Nueva Contraseña (mínimo 6 caracteres)
+              </label>
+              <input
+                type="password"
+                id="inputPasswordNueva"
+                class="form-control"
+                placeholder="Ingresa tu nueva contraseña"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label for="inputPasswordConfirmacion" class="form-label fw-semibold small">
+                Confirmar Nueva Contraseña
+              </label>
+              <input
+                type="password"
+                id="inputPasswordConfirmacion"
+                class="form-control"
+                placeholder="Repite tu nueva contraseña"
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn btn-nova-primary px-4 py-2">
+              <i class="bi bi-shield-lock me-1"></i> Actualizar Contraseña
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-white border-top py-3 text-center text-secondary small mt-auto">
+    <div class="container">
+      NovaBank S.A. • Sucursal Virtual Personas • Canal Cifrado © 2026
+    </div>
+  </footer>
+
+  <script src="/js/cliente.js"></script>
+</body>
+</html>

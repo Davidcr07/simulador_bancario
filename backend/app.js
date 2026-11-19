@@ -6,6 +6,7 @@ require('dotenv').config();
 const { pool, verificarConexion } = require('./config/db');
 const authRoutes = require('./routes/auth.routes');
 const cajeroRoutes = require('./routes/cajero.routes');
+const clienteRoutes = require('./routes/cliente.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 // Rutas de la API
 app.use('/api/auth', authRoutes);
 app.use('/api/cajero', cajeroRoutes);
+app.use('/api/cliente', clienteRoutes);
 
 // Endpoint de verificación de la Fase 1 (Estado del servidor y base de datos)
 app.get('/api/health', async (req, res) => {

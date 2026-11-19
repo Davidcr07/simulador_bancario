@@ -58,7 +58,7 @@ async function buscarPorId(cuentaId) {
 }
 
 /**
- * Obtiene y bloquea (FOR UPDATE) el registro de una cuenta dentro de una transacción activa.
+ * Obtiene y bloquea (FOR UPDATE) el registro de una cuenta por su ID dentro de una transacción activa.
  */
 async function obtenerPorIdParaTransaccion(connection, cuentaId) {
   const [rows] = await connection.query(
@@ -81,6 +81,29 @@ async function obtenerPorIdParaTransaccion(connection, cuentaId) {
 }
 
 /**
+ * Obtiene y bloquea (FOR UPDATE) el registro de una cuenta por su Número de Cuenta dentro de una transacción activa.
+ */
+async function obtenerPorNumeroParaTransaccion(connection, numeroCuenta) {
+  const [rows] = await connection.query(
+    `SELECT 
+        c.id,
+        c.usuario_id,
+        c.numero_cuenta,
+        c.tipo_cuenta,
+        c.saldo,
+        c.estado AS estado_cuenta,
+        u.estado AS estado_usuario,
+        u.nombre_completo AS titular_nombre
+     FROM cuentas c
+     INNER JOIN usuarios u ON u.id = c.usuario_id
+     WHERE c.numero_cuenta = ?
+     FOR UPDATE`,
+    [numeroCuenta]
+  );
+  return rows[0] || null;
+}
+
+/**
  * Actualiza el saldo de una cuenta dentro de una transacción activa.
  */
 async function actualizarSaldoEnTransaccion(connection, cuentaId, nuevoSaldo) {
@@ -94,5 +117,6 @@ module.exports = {
   buscarPorNumeroCuenta,
   buscarPorId,
   obtenerPorIdParaTransaccion,
+  obtenerPorNumeroParaTransaccion,
   actualizarSaldoEnTransaccion
 };

@@ -5,9 +5,6 @@ const { pool } = require('../config/db');
  * Atributos principales: id, cuenta_id, fecha, tipo_movimiento, descripcion, valor, saldo_resultante
  */
 
-/**
- * Obtiene el historial de movimientos de una cuenta específica.
- */
 async function listarPorCuenta(cuentaId, limite = null) {
   let sql = `
     SELECT 
@@ -33,9 +30,6 @@ async function listarPorCuenta(cuentaId, limite = null) {
   return rows;
 }
 
-/**
- * Inserta un nuevo movimiento financiero dentro de una transacción SQL activa.
- */
 async function crearEnTransaccion(connection, { cuenta_id, tipo_movimiento, descripcion, valor, saldo_resultante }) {
   const [result] = await connection.query(
     `INSERT INTO movimientos (cuenta_id, tipo_movimiento, descripcion, valor, saldo_resultante)
@@ -45,7 +39,43 @@ async function crearEnTransaccion(connection, { cuenta_id, tipo_movimiento, desc
   return result.insertId;
 }
 
+/**
+ * Lista el historial general de movimientos de todo el banco para el Módulo Administrativo.
+ */
+async function listarTodos(tipoMovimiento = null, limite = 200) {
+  let sql = `
+    SELECT
+      m.id,
+      m.cuenta_id,
+      m.fecha,
+      m.tipo_movimiento,
+      m.descripcion,
+      m.valor,
+      m.saldo_resultante,
+      c.numero_cuenta,
+      c.tipo_cuenta,
+      u.nombre_completo AS titular_nombre,
+      u.documento AS titular_documento
+    FROM movimientos m
+    INNER JOIN cuentas c ON c.id = m.cuenta_id
+    INNER JOIN usuarios u ON u.id = c.usuario_id
+  `;
+  const params = [];
+
+  if (tipoMovimiento && tipoMovimiento !== 'TODOS') {
+    sql += ' WHERE m.tipo_movimiento = ?';
+    params.push(tipoMovimiento);
+  }
+
+  sql += ' ORDER BY m.fecha DESC, m.id DESC LIMIT ?';
+  params.push(Number(limite));
+
+  const [rows] = await pool.query(sql, params);
+  return rows;
+}
+
 module.exports = {
   listarPorCuenta,
-  crearEnTransaccion
+  crearEnTransaccion,
+  listarTodos
 };

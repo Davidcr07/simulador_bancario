@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consola Administrativa Central — NovaBank</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=5" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      background-color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .navbar-admin {
+      background-color: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .brand-icon-admin {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0052cc 0%, #0ea5e9 100%);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .kpi-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 1.1rem;
+      padding: 1.35rem;
+      box-shadow: 0 4px 14px -4px rgba(15, 23, 42, 0.05);
+      height: 100%;
+    }
+    .kpi-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+    .admin-panel-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 1.15rem;
+      box-shadow: 0 8px 20px -8px rgba(15, 23, 42, 0.06);
+    }
+    .nav-pills-admin .nav-link {
+      color: #475569;
+      font-weight: 600;
+      border-radius: 0.7rem;
+      padding: 0.65rem 1.2rem;
+    }
+    .nav-pills-admin .nav-link:hover {
+      background-color: #e2e8f0;
+      color: #0f172a;
+    }
+    .nav-pills-admin .nav-link.active {
+      background-color: #0f172a;
+      color: #ffffff;
+    }
+    .btn-nova-primary {
+      background-color: #0052cc;
+      border-color: #0052cc;
+      color: #ffffff !important;
+      font-weight: 600;
+      border-radius: 0.6rem;
+    }
+    .btn-nova-primary:hover {
+      background-color: #0747a6;
+      border-color: #0747a6;
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra superior de la Consola Corporativa -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-admin py-3 shadow-sm">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/admin/dashboard.html">
+        <span class="brand-icon-admin"><i class="bi bi-shield-lock"></i></span>
+        <span>NovaBank <span class="text-info fw-normal fs-6">| Consola Central de Administración</span></span>
+      </a>
+
+      <div class="d-flex align-items-center gap-3">
+        <div class="text-end d-none d-sm-block">
+          <div class="fw-bold small text-white" id="navNombreAdmin">Administrador</div>
+          <div class="text-white-50" style="font-size: 0.75rem;" id="navCorreoAdmin">—</div>
+        </div>
+        <button type="button" id="btnRefrescarTodoAdmin" class="btn btn-outline-info btn-sm fw-semibold">
+          <i class="bi bi-arrow-clockwise me-1"></i> Sincronizar
+        </button>
+        <button type="button" id="btnCerrarSesionAdmin" class="btn btn-outline-light btn-sm fw-semibold">
+          <i class="bi bi-box-arrow-right me-1"></i> Salir
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main class="container py-4">
+    <!-- Alerta global -->
+    <div id="alertaAdmin" class="alert d-none small shadow-sm" role="alert"></div>
+
+    <!-- ================================================================== -->
+    <!-- DASHBOARD ADMINISTRATIVO: 4 INDICADORES OBLIGATORIOS (Sección 4)   -->
+    <!-- ================================================================== -->
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card d-flex align-items-center justify-content-between">
+          <div>
+            <span class="text-muted small fw-semibold d-block">Total Clientes</span>
+            <div class="kpi-value mt-1" id="kpiTotalClientes">0</div>
+            <span class="text-secondary" style="font-size: 0.75rem;">Registrados en el banco</span>
+          </div>
+          <div class="kpi-icon bg-primary-subtle text-primary">
+            <i class="bi bi-people-fill"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card d-flex align-items-center justify-content-between">
+          <div>
+            <span class="text-muted small fw-semibold d-block">Clientes / Cuentas Activas</span>
+            <div class="kpi-value mt-1 text-success" id="kpiClientesActivos">0</div>
+            <span class="text-secondary" style="font-size: 0.75rem;">Habilitados para operar</span>
+          </div>
+          <div class="kpi-icon bg-success-subtle text-success">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card d-flex align-items-center justify-content-between">
+          <div>
+            <span class="text-muted small fw-semibold d-block">Clientes Bloqueados</span>
+            <div class="kpi-value mt-1 text-danger" id="kpiClientesBloqueados">0</div>
+            <span class="text-secondary" style="font-size: 0.75rem;">Con restricción operativa</span>
+          </div>
+          <div class="kpi-icon bg-danger-subtle text-danger">
+            <i class="bi bi-slash-circle-fill"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="kpi-card d-flex align-items-center justify-content-between">
+          <div>
+            <span class="text-muted small fw-semibold d-block">Suma Total de Saldos</span>
+            <div class="kpi-value mt-1 text-primary" id="kpiSumaSaldos">$0</div>
+            <span class="text-secondary" style="font-size: 0.75rem;">Capital depositado en cuentas</span>
+          </div>
+          <div class="kpi-icon bg-info-subtle text-info-emphasis">
+            <i class="bi bi-safe2-fill"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de navegación de módulos administrativos -->
+    <div class="admin-panel-card p-3 mb-4">
+      <ul class="nav nav-pills nav-pills-admin gap-2" id="menuPestanasAdmin">
+        <li class="nav-item">
+          <button type="button" class="nav-link active" data-tab="clientes">
+            <i class="bi bi-people me-1"></i> Gestión de Clientes
+          </button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" data-tab="cuentas">
+            <i class="bi bi-credit-card-2-front me-1"></i> Cuentas y Saldos
+          </button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" data-tab="consignaciones">
+            <i class="bi bi-cash-coin me-1"></i> Realizar Consignaciones
+          </button>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" data-tab="movimientos">
+            <i class="bi bi-journal-text me-1"></i> Historial General de Movimientos
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- PESTAÑA 1: GESTIÓN DE CLIENTES (Listar, Buscar, Crear, Editar, Estado) -->
+    <!-- ================================================================== -->
+    <section id="tabClientes" class="admin-panel-card p-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+          <h4 class="h5 fw-bold mb-1">Directorio General de Clientes</h4>
+          <p class="text-muted small mb-0">
+            Crea nuevos clientes con su cuenta bancaria, consulta su ficha detallada, edita datos o cambia su estado operativo.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-nova-primary px-3 py-2"
+          data-bs-toggle="modal"
+          data-bs-target="#modalCrearCliente"
+        >
+          <i class="bi bi-person-plus-fill me-1"></i> Crear Nuevo Cliente
+        </button>
+      </div>
+
+      <!-- Buscador de clientes -->
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-light text-muted">
+              <i class="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              id="inputBuscarCliente"
+              class="form-control"
+              placeholder="Buscar por nombre, cédula/documento, correo o número de cuenta..."
+            />
+            <button type="button" id="btnLimpiarBusqueda" class="btn btn-outline-secondary">
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light small text-uppercase text-secondary">
+            <tr>
+              <th>Cédula / Doc.</th>
+              <th>Nombre Completo</th>
+              <th>Correo</th>
+              <th>Cuenta Bancaria</th>
+              <th class="text-end">Saldo Actual</th>
+              <th>Estado</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaClientesAdmin">
+            <tr>
+              <td colspan="7" class="text-center text-muted py-4">Cargando clientes...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- PESTAÑA 2: CONSULTA GENERAL DE CUENTAS Y SALDOS                    -->
+    <!-- ================================================================== -->
+    <section id="tabCuentas" class="admin-panel-card p-4 d-none">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+          <h4 class="h5 fw-bold mb-1">Cuentas Bancarias y Saldos</h4>
+          <p class="text-muted small mb-0">
+            Monitoreo en tiempo real de todas las cuentas de ahorros y corrientes registradas en NovaBank.
+          </p>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light small text-uppercase text-secondary">
+            <tr>
+              <th>Número de Cuenta</th>
+              <th>Tipo</th>
+              <th>Titular</th>
+              <th>Cédula Titular</th>
+              <th>Fecha Apertura</th>
+              <th>Estado</th>
+              <th class="text-end">Saldo Disponible</th>
+              <th class="text-end">Operación</th>
+            </tr>
+          </thead>
+          <tbody id="tablaCuentasAdmin">
+            <tr>
+              <td colspan="8" class="text-center text-muted py-4">Cargando cuentas bancarias...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- PESTAÑA 3: REALIZAR CONSIGNACIONES BANCARIAS                       -->
+    <!-- ================================================================== -->
+    <section id="tabConsignaciones" class="admin-panel-card p-4 d-none">
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <h4 class="h5 fw-bold mb-1">Consignación Bancaria a Cuenta de Cliente</h4>
+          <p class="text-muted small mb-4">
+            Abona fondos directamente a cualquier cuenta activa. El movimiento y el nuevo saldo se reflejarán al instante en la Sucursal Virtual y en el Cajero NovaATM.
+          </p>
+
+          <form id="formConsignacionAdmin" novalidate>
+            <div class="mb-3">
+              <label for="inputCuentaConsignacion" class="form-label fw-semibold small">
+                Cuenta Bancaria Destino
+              </label>
+              <select id="selectCuentaConsignacion" class="form-select mb-2">
+                <option value="">— Selecciona una cuenta de la lista o digítala abajo —</option>
+              </select>
+              <input
+                type="text"
+                id="inputCuentaConsignacion"
+                class="form-control"
+                placeholder="Número de cuenta (Ej: 1001000001)"
+                required
+              />
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-sm-6">
+                <label for="inputValorConsignacion" class="form-label fw-semibold small">
+                  Valor a Consignar ($)
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light fw-bold">$</span>
+                  <input
+                    type="number"
+                    id="inputValorConsignacion"
+                    class="form-control"
+                    placeholder="Ej: 300000"
+                    min="1"
+                    step="any"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <label for="inputDescripcionConsignacion" class="form-label fw-semibold small">
+                  Descripción / Concepto
+                </label>
+                <input
+                  type="text"
+                  id="inputDescripcionConsignacion"
+                  class="form-control"
+                  placeholder="Consignación en oficina central"
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success fw-bold px-4 py-2">
+              <i class="bi bi-check2-circle me-1"></i> Aplicar Consignación
+            </button>
+          </form>
+        </div>
+
+        <!-- Comprobante de consignación -->
+        <div class="col-lg-5">
+          <div class="card border bg-light rounded-4 p-4 h-100">
+            <h6 class="fw-bold border-bottom pb-2 mb-3">
+              <i class="bi bi-receipt text-success me-1"></i> Comprobante de Consignación
+            </h6>
+            <div id="compConsigVacio" class="text-muted small text-center my-auto py-4">
+              Aquí se mostrará el resumen de la operación y el nuevo saldo de la cuenta una vez apliques la consignación.
+            </div>
+            <div id="compConsigDatos" class="d-none small">
+              <div class="alert alert-success py-2 small fw-semibold mb-3">
+                <i class="bi bi-check-circle-fill me-1"></i> Consignación Registrada
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Movimiento N.°:</span>
+                <strong id="compConsigId">#—</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Cuenta:</span>
+                <strong id="compConsigCuenta">—</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Titular:</span>
+                <strong id="compConsigTitular">—</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Saldo Anterior:</span>
+                <span id="compConsigSaldoAnt">$0</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2 text-success">
+                <span>Valor Consignado:</span>
+                <strong id="compConsigValor">+$0</strong>
+              </div>
+              <hr class="my-2" />
+              <div class="d-flex justify-content-between fs-6 text-primary">
+                <span class="fw-bold">Nuevo Saldo en Cuenta:</span>
+                <strong id="compConsigNuevoSaldo">$0</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- PESTAÑA 4: HISTORIAL GENERAL DE MOVIMIENTOS DEL BANCO              -->
+    <!-- ================================================================== -->
+    <section id="tabMovimientos" class="admin-panel-card p-4 d-none">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+          <h4 class="h5 fw-bold mb-1">Auditoría e Historial General de Movimientos</h4>
+          <p class="text-muted small mb-0">
+            Registro inmutable de todas las consignaciones, retiros de cajero y transferencias realizadas en NovaBank.
+          </p>
+        </div>
+
+        <div>
+          <select id="filtroTipoMovGeneral" class="form-select form-select-sm" style="min-width: 220px;">
+            <option value="TODOS">Todos los tipos de movimiento</option>
+            <option value="CONSIGNACION">Consignaciones</option>
+            <option value="RETIRO_CAJERO">Retiros en Cajero</option>
+            <option value="TRANSFERENCIA_ENVIADA">Transferencias Enviadas</option>
+            <option value="TRANSFERENCIA_RECIBIDA">Transferencias Recibidas</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light small text-uppercase text-secondary">
+            <tr>
+              <th>ID</th>
+              <th>Fecha y Hora</th>
+              <th>Cuenta</th>
+              <th>Titular</th>
+              <th>Tipo</th>
+              <th>Descripción</th>
+              <th class="text-end">Valor</th>
+              <th class="text-end">Saldo Resultante</th>
+            </tr>
+          </thead>
+          <tbody id="tablaMovimientosGenerales">
+            <tr>
+              <td colspan="8" class="text-center text-muted py-4">Cargando movimientos generales...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL 1: CREAR NUEVO CLIENTE CON SU CUENTA BANCARIA                  -->
+  <!-- ==================================================================== -->
+  <div class="modal fade" id="modalCrearCliente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <div class="modal-header bg-dark text-white rounded-top-4">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-person-plus me-1"></i> Apertura de Cliente y Cuenta Bancaria
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="formCrearCliente" novalidate>
+          <div class="modal-body p-4">
+            <h6 class="fw-bold text-primary small text-uppercase mb-3">1. Datos Personales del Cliente</h6>
+            <div class="row g-3 mb-4">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Cédula / Documento *</label>
+                <input type="text" id="crearDocumento" class="form-control" placeholder="Ej: 1000000005" required />
+              </div>
+              <div class="col-md-8">
+                <label class="form-label fw-semibold small">Nombre Completo *</label>
+                <input type="text" id="crearNombre" class="form-control" placeholder="Ej: Laura Martínez" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Correo Electrónico *</label>
+                <input type="email" id="crearCorreo" class="form-control" placeholder="laura@correo.com" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Contraseña Banca Virtual *</label>
+                <input type="password" id="crearPassword" class="form-control" placeholder="Mínimo 6 caracteres" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Teléfono</label>
+                <input type="text" id="crearTelefono" class="form-control" placeholder="Ej: 3115556677" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold small">Dirección</label>
+                <input type="text" id="crearDireccion" class="form-control" placeholder="Ej: Calle 80 # 15-22" />
+              </div>
+            </div>
+
+            <h6 class="fw-bold text-primary small text-uppercase mb-3">2. Configuración de Cuenta Bancaria y Cajero</h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Tipo de Cuenta *</label>
+                <select id="crearTipoCuenta" class="form-select">
+                  <option value="AHORROS">Cuenta de Ahorros</option>
+                  <option value="CORRIENTE">Cuenta Corriente</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">PIN Cajero (4 dígitos) *</label>
+                <input
+                  type="password"
+                  id="crearPin"
+                  class="form-control"
+                  placeholder="Ej: 4321"
+                  maxlength="6"
+                  inputmode="numeric"
+                  required
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Saldo Inicial de Apertura ($)</label>
+                <input
+                  type="number"
+                  id="crearSaldoInicial"
+                  class="form-control"
+                  value="0"
+                  min="0"
+                  step="any"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light rounded-bottom-4">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-nova-primary px-4">Crear Cliente y Cuenta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL 2: CONSULTAR INFORMACIÓN DETALLADA DE UN CLIENTE               -->
+  <!-- ==================================================================== -->
+  <div class="modal fade" id="modalDetalleCliente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <div class="modal-header bg-primary text-white rounded-top-4">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-person-vcard me-1"></i> Ficha Detallada del Cliente
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3 h-100 small">
+                <h6 class="fw-bold text-primary mb-2">Información Personal</h6>
+                <div><strong>Nombre:</strong> <span id="detNombre">—</span></div>
+                <div><strong>Cédula / Doc.:</strong> <span id="detDocumento">—</span></div>
+                <div><strong>Correo:</strong> <span id="detCorreo">—</span></div>
+                <div><strong>Teléfono:</strong> <span id="detTelefono">—</span></div>
+                <div><strong>Dirección:</strong> <span id="detDireccion">—</span></div>
+                <div><strong>Estado Usuario:</strong> <span id="detEstadoUsuario">—</span></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3 h-100 small">
+                <h6 class="fw-bold text-primary mb-2">Producto Bancario Asociado</h6>
+                <div><strong>Número de Cuenta:</strong> <span id="detNumeroCuenta" class="fw-bold">—</span></div>
+                <div><strong>Tipo de Cuenta:</strong> <span id="detTipoCuenta">—</span></div>
+                <div><strong>Saldo Disponible:</strong> <span id="detSaldo" class="fw-bold text-success fs-6">—</span></div>
+                <div><strong>Estado Cuenta:</strong> <span id="detEstadoCuenta">—</span></div>
+                <div><strong>Fecha Apertura:</strong> <span id="detFechaApertura">—</span></div>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="fw-bold small text-uppercase text-secondary mb-2">Movimientos Recientes del Cliente</h6>
+          <div class="table-responsive" style="max-height: 240px;">
+            <table class="table table-sm table-hover align-middle mb-0 small">
+              <thead class="table-light">
+                <tr>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Descripción</th>
+                  <th class="text-end">Valor</th>
+                  <th class="text-end">Saldo Resultante</th>
+                </tr>
+              </thead>
+              <tbody id="tablaDetalleMovimientosCliente"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- MODAL 3: EDITAR INFORMACIÓN DE UN CLIENTE                            -->
+  <!-- ==================================================================== -->
+  <div class="modal fade" id="modalEditarCliente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <div class="modal-header bg-dark text-white rounded-top-4">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-pencil-square me-1"></i> Editar Información del Cliente
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="formEditarCliente" novalidate>
+          <div class="modal-body p-4">
+            <input type="hidden" id="editClienteId" />
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Nombre Completo *</label>
+              <input type="text" id="editNombre" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Correo Electrónico *</label>
+              <input type="email" id="editCorreo" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Teléfono</label>
+              <input type="text" id="editTelefono" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Dirección</label>
+              <input type="text" id="editDireccion" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="form-label fw-semibold small">Tipo de Cuenta Bancaria</label>
+              <select id="editTipoCuenta" class="form-select">
+                <option value="AHORROS">Cuenta de Ahorros</option>
+                <option value="CORRIENTE">Cuenta Corriente</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer bg-light rounded-bottom-4">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-nova-primary px-4">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-white border-top py-3 text-center text-secondary small mt-auto">
+    <div class="container">
+      NovaBank S.A. • Consola Administrativa Central • Uso Interno Exclusivo © 2026
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

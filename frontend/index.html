@@ -149,7 +149,7 @@
     </div>
   </div>
 
-  <!-- Barra de navegación principal (Con fondo blanco sólido garantizado) -->
+  <!-- Barra de navegación principal (En una sola línea limpia con botón desplegable Ingresar) -->
   <nav class="navbar navbar-expand-lg navbar-nova py-3 sticky-top">
     <div class="container">
       <a class="brand-logo" href="/">
@@ -170,28 +170,87 @@
       </button>
 
       <div class="collapse navbar-collapse" id="menuPrincipal">
-        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-3 fw-semibold">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-4 fw-semibold align-items-lg-center">
           <li class="nav-item">
-            <a class="nav-link text-dark" href="#inicio">Personas</a>
+            <a class="nav-link text-dark text-nowrap" href="#inicio">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-secondary" href="#cuentas">Cuentas Bancarias</a>
+            <a class="nav-link text-secondary text-nowrap" href="#cuentas">Cuentas</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle text-secondary text-nowrap"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Canales y Servicios
+            </a>
+            <ul class="dropdown-menu border-0 shadow-sm rounded-3 p-2">
+              <li>
+                <a class="dropdown-item rounded-2 py-2" href="#canales">
+                  <i class="bi bi-grid-1x2 text-primary me-2"></i>Canales Digitales
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item rounded-2 py-2" href="#cuentas">
+                  <i class="bi bi-piggy-bank text-primary me-2"></i>Portafolio de Cuentas
+                </a>
+              </li>
+              <li><hr class="dropdown-divider my-1" /></li>
+              <li>
+                <a class="dropdown-item rounded-2 py-2" href="#seguridad">
+                  <i class="bi bi-shield-check text-success me-2"></i>Centro de Seguridad
+                </a>
+              </li>
+            </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-secondary" href="#canales">Canales Digitales</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-secondary" href="#seguridad">Seguridad</a>
+            <a class="nav-link text-secondary text-nowrap" href="#seguridad">Seguridad</a>
           </li>
         </ul>
 
-        <div class="d-flex flex-wrap gap-2">
-          <a href="/cajero/index.html" class="btn btn-nova-outline">
-            <i class="bi bi-cash-stack me-1"></i> Cajero NovaATM
-          </a>
-          <a href="/cliente/login.html" class="btn btn-nova-primary">
-            <i class="bi bi-person-lock me-1"></i> Sucursal Virtual Personas
-          </a>
+        <!-- Único botón principal desplegable de Ingreso -->
+        <div class="dropdown">
+          <button
+            class="btn btn-nova-primary dropdown-toggle px-4 py-2 d-inline-flex align-items-center gap-2 text-nowrap"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="bi bi-person-circle"></i>
+            <span>Ingresar</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 p-2 mt-2" style="min-width: 280px;">
+            <li class="px-3 py-2 border-bottom mb-1">
+              <span class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                Selecciona tu canal de acceso
+              </span>
+            </li>
+            <li>
+              <a class="dropdown-item rounded-3 p-2 d-flex align-items-start gap-3" href="/cliente/login.html">
+                <div class="rounded-3 bg-primary-subtle text-primary p-2 d-flex align-items-center justify-content-center">
+                  <i class="bi bi-laptop fs-5"></i>
+                </div>
+                <div>
+                  <div class="fw-bold text-dark">Sucursal Virtual Personas</div>
+                  <small class="text-muted">Consultas, extractos y transferencias</small>
+                </div>
+              </a>
+            </li>
+            <li class="mt-1">
+              <a class="dropdown-item rounded-3 p-2 d-flex align-items-start gap-3" href="/cajero/index.html">
+                <div class="rounded-3 bg-success-subtle text-success p-2 d-flex align-items-center justify-content-center">
+                  <i class="bi bi-cash-coin fs-5"></i>
+                </div>
+                <div>
+                  <div class="fw-bold text-dark">Cajero Automático NovaATM</div>
+                  <small class="text-muted">Retiros de efectivo y saldo con PIN</small>
+                </div>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
